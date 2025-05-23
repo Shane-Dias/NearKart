@@ -736,6 +736,7 @@ const SellerSignup = () => {
                   <button
                     onClick={() => {
                       navigate("/login");
+                      window.scrollTo(0, 0);
                     }}
                     className="text-blue-600 hover:text-blue-700 font-semibold"
                   >

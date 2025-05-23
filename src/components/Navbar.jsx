@@ -43,6 +43,7 @@ const Navbar = () => {
               <button
                 onClick={() => {
                   navigate("/");
+                  window.scrollTo(0, 0);
                 }}
                 className="flex-shrink-0 hover:opacity-80 transition-opacity duration-200"
               >
@@ -93,6 +94,7 @@ const Navbar = () => {
                     <button
                       onClick={() => {
                         navigate("/login");
+                        window.scrollTo(0, 0);
                       }}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
                     >
@@ -177,7 +179,7 @@ const Navbar = () => {
                 onClick={() => {
                   const encoded = encodeURIComponent(category);
                   navigate(`/category/${encoded}`);
-
+                  window.scrollTo(0, 0);
                   setIsCategoryDropdownOpen(false);
                 }}
                 className="flex-shrink-0 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
@@ -208,6 +210,7 @@ const Navbar = () => {
                         onClick={() => {
                           const encoded = encodeURIComponent(category);
                           navigate(`/category/${encoded}`);
+                          window.scrollTo(0, 0);
                           setIsCategoryDropdownOpen(false);
                         }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
@@ -236,6 +239,7 @@ const Navbar = () => {
                   onClick={() => {
                     const encoded = encodeURIComponent(category);
                     navigate(`/category/${encoded}`);
+                    window.scrollTo(0, 0);
                     setIsCategoryDropdownOpen(false);
                   }}
                   key={index}

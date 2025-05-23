@@ -6,8 +6,9 @@ const AccountTypeModal = ({ onClose }) => {
   const navigate = useNavigate();
 
   const handleOptionClick = (path) => {
-    onClose(); // Close the modal first
-    navigate(path); // Then navigate
+    onClose();
+    navigate(path);
+    window.scrollTo(0, 0);
   };
 
   return (
