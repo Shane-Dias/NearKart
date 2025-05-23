@@ -1,22 +1,42 @@
 import React, { useState } from "react";
 import { Search, ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react";
+import AccountTypeModal from "./AccountTypeModal";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [cartCount, setCartCount] = useState(3);
+  const [showAccountTypeModal, setShowAccountTypeModal] = useState(false);
+  const naviagte = useNavigate();
 
   // Sample categories with icons
   const categories = [
-    "Electronics",
-    "Groceries",
-    "Fashion",
-    "Home & Garden",
-    "Beauty & Health",
-    "Sports & Outdoors",
-    "Books & Media",
+    "Grocery & Food",
+    "Electronics & Gadgets",
+    "Clothing & Fashion",
+    "Home & Kitchen",
+    "Health & Beauty",
+    "Books & Stationery",
+    "Sports & Fitness",
+    "Toys & Games",
+    "Jewelry & Accessories",
     "Automotive",
+    "Hardware & Tools",
+    "Pet Supplies",
+    "Art & Crafts",
+    "Others",
   ];
+
+  // Show first 6 categories, rest in dropdown
+  const visibleCategories = categories.slice(0, 6);
+  const dropdownCategories = categories.slice(6);
+
+  const handleLogoClick = () => {
+    // Navigate to homepage - you can implement actual navigation here
+    console.log("Navigate to homepage");
+  };
 
   return (
     <div className="sticky top-0 z-50 bg-white shadow-lg border-b border-blue-100">
@@ -26,11 +46,22 @@ const Navbar = () => {
           <div className="flex items-center justify-between h-16">
             {/* Logo Section */}
             <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <h1 className="text-2xl font-bold text-white tracking-tight">
-                  NearKart
-                </h1>
-              </div>
+              <button
+                onClick={() => {
+                  naviagte("/");
+                }}
+                className="flex-shrink-0 hover:opacity-80 transition-opacity duration-200"
+              >
+                <div className="flex items-center space-x-2">
+                  {/* Dummy Logo */}
+                  <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center">
+                    <span className="text-blue-600 font-bold text-lg">N</span>
+                  </div>
+                  <h1 className="text-2xl font-bold text-white tracking-tight">
+                    NearKart
+                  </h1>
+                </div>
+              </button>
             </div>
 
             {/* Search Bar - Hidden on mobile */}
@@ -71,12 +102,12 @@ const Navbar = () => {
                     >
                       Sign In
                     </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                    <button
+                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                      onClick={() => setShowAccountTypeModal(true)}
                     >
                       Create Account
-                    </a>
+                    </button>
                     <hr className="my-2" />
                     <a
                       href="#"
@@ -142,8 +173,9 @@ const Navbar = () => {
       {/* Categories Bar */}
       <div className="bg-blue-50 border-t border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-1 py-3 overflow-x-auto scrollbar-hide">
-            {categories.map((category, index) => (
+          <div className="flex items-center space-x-1 py-3">
+            {/* Visible Categories */}
+            {visibleCategories.map((category, index) => (
               <button
                 key={index}
                 className="flex-shrink-0 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
@@ -151,6 +183,35 @@ const Navbar = () => {
                 {category}
               </button>
             ))}
+
+            {/* More Categories Dropdown */}
+            {dropdownCategories.length > 0 && (
+              <div className="relative">
+                <button
+                  onClick={() =>
+                    setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
+                  }
+                  className="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                >
+                  <span>More</span>
+                  <ChevronDown className="h-4 w-4" />
+                </button>
+
+                {/* Categories Dropdown Menu */}
+                {isCategoryDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
+                    {dropdownCategories.map((category, index) => (
+                      <button
+                        key={index}
+                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                      >
+                        {category}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -177,14 +238,20 @@ const Navbar = () => {
       )}
 
       {/* Backdrop for dropdowns */}
-      {(isUserMenuOpen || isMenuOpen) && (
+      {(isUserMenuOpen || isMenuOpen || isCategoryDropdownOpen) && (
         <div
           className="fixed inset-0 z-40 bg-black bg-opacity-25"
           onClick={() => {
             setIsUserMenuOpen(false);
             setIsMenuOpen(false);
+            setIsCategoryDropdownOpen(false);
           }}
         />
+      )}
+
+      {/* Floating Account Type Selector */}
+      {showAccountTypeModal && (
+        <AccountTypeModal onClose={() => setShowAccountTypeModal(false)} />
       )}
     </div>
   );
