@@ -1,11 +1,14 @@
-import React from 'react'
+import React from "react";
+import Hero from "../components/Hero";
+import NearBySellers from "../components/NearBySellers";
 
 const Home = () => {
   return (
     <div>
-      <h2 className='text-4xl underline'>This is Home page</h2>
+      <Hero />
+      <NearBySellers />
     </div>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;
