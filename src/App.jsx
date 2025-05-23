@@ -5,6 +5,9 @@ import Navbar from "./components/Navbar";
 import BuyerSignup from "./pages/BuyerSignup";
 import SellerSignup from "./pages/SellerSignup";
 import Login from "./pages/Login";
+import CategoryPage from "./pages/CategoryPage";
+import Footer from "./components/Footer";
+import ProductDetails from "./pages/ProductDetails";
 
 const App = () => {
   return (
@@ -15,7 +18,10 @@ const App = () => {
         <Route path="/signup/buyer" element={<BuyerSignup />} />
         <Route path="/signup/seller" element={<SellerSignup />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/category/:category" element={<CategoryPage />} />
+        <Route path="/product/:product" element={<ProductDetails />} />
       </Routes>
+      <Footer />
     </BrowserRouter>
   );
 };

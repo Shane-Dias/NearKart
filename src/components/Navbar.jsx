@@ -9,7 +9,7 @@ const Navbar = () => {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [cartCount, setCartCount] = useState(3);
   const [showAccountTypeModal, setShowAccountTypeModal] = useState(false);
-  const naviagte = useNavigate();
+  const navigate = useNavigate();
 
   // Sample categories with icons
   const categories = [
@@ -32,12 +32,6 @@ const Navbar = () => {
   // Show first 6 categories, rest in dropdown
   const visibleCategories = categories.slice(0, 6);
   const dropdownCategories = categories.slice(6);
-
-  const handleLogoClick = () => {
-    // Navigate to homepage - you can implement actual navigation here
-    console.log("Navigate to homepage");
-  };
-
   return (
     <div className="sticky top-0 z-50 bg-white shadow-lg border-b border-blue-100">
       {/* Main Navbar */}
@@ -48,7 +42,7 @@ const Navbar = () => {
             <div className="flex items-center">
               <button
                 onClick={() => {
-                  naviagte("/");
+                  navigate("/");
                 }}
                 className="flex-shrink-0 hover:opacity-80 transition-opacity duration-200"
               >
@@ -98,7 +92,7 @@ const Navbar = () => {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                     <button
                       onClick={() => {
-                        naviagte("/login");
+                        navigate("/login");
                       }}
                       className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
                     >
@@ -180,6 +174,12 @@ const Navbar = () => {
             {visibleCategories.map((category, index) => (
               <button
                 key={index}
+                onClick={() => {
+                  const encoded = encodeURIComponent(category);
+                  navigate(`/category/${encoded}`);
+
+                  setIsCategoryDropdownOpen(false);
+                }}
                 className="flex-shrink-0 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
               >
                 {category}
@@ -205,6 +205,11 @@ const Navbar = () => {
                     {dropdownCategories.map((category, index) => (
                       <button
                         key={index}
+                        onClick={() => {
+                          const encoded = encodeURIComponent(category);
+                          navigate(`/category/${encoded}`);
+                          setIsCategoryDropdownOpen(false);
+                        }}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
                       >
                         {category}
@@ -228,6 +233,11 @@ const Navbar = () => {
               </h3>
               {categories.map((category, index) => (
                 <button
+                  onClick={() => {
+                    const encoded = encodeURIComponent(category);
+                    navigate(`/category/${encoded}`);
+                    setIsCategoryDropdownOpen(false);
+                  }}
                   key={index}
                   className="block w-full text-left px-3 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors duration-200"
                 >

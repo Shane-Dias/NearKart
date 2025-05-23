@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { TrendingUp, Star, Heart, ShoppingCart, Eye } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const TrendingProducts = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Mock data for demonstration
   const mockProducts = [
@@ -294,6 +296,20 @@ const TrendingProducts = () => {
                 <button className="w-full bg-blue-600 text-white py-2.5 rounded-xl font-semibold hover:bg-blue-700 transition-colors duration-300 flex items-center justify-center gap-2 group-hover:shadow-lg">
                   <ShoppingCart className="w-4 h-4" />
                   Add to Cart
+                </button>
+
+                <div className="h-3"></div>
+
+                {/* View Details Button */}
+                <button
+                  onClick={() => {
+                    navigate(`/product/${product._id}`);
+                    window.scrollTo(0, 0);
+                  }}
+                  className="w-full py-2.5 rounded-xl font-semibold transition-colors duration-300 flex items-center justify-center gap-2 bg-white text-blue-600 border-2 border-blue-600 hover:bg-blue-50 hover:shadow-lg"
+                >
+                  <Eye className="w-4 h-4" />
+                  View Details
                 </button>
               </div>
             </div>
