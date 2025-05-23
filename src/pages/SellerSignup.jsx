@@ -14,6 +14,7 @@ import {
   Camera,
   FileText,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const SellerSignup = () => {
   const [formData, setFormData] = useState({
@@ -31,6 +32,7 @@ const SellerSignup = () => {
     role: "seller",
   });
 
+  const navigate = useNavigate();
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -731,12 +733,14 @@ const SellerSignup = () => {
               <div className="text-center pt-4">
                 <p className="text-sm text-gray-600">
                   Already have an account?{" "}
-                  <a
-                    href="#"
+                  <button
+                    onClick={() => {
+                      navigate("/login");
+                    }}
                     className="text-blue-600 hover:text-blue-700 font-semibold"
                   >
                     Sign in
-                  </a>
+                  </button>
                 </p>
               </div>
             </div>

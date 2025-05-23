@@ -9,6 +9,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const BuyerSignup = () => {
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ const BuyerSignup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [locationLoading, setLocationLoading] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -442,12 +444,14 @@ const BuyerSignup = () => {
             <div className="text-center pt-4">
               <p className="text-sm text-gray-600">
                 Already have an account?{" "}
-                <a
-                  href="#"
+                <button
+                  onClick={() => {
+                    navigate("/login");
+                  }}
                   className="text-blue-600 hover:text-blue-700 font-semibold"
                 >
                   Sign in
-                </a>
+                </button>
               </p>
             </div>
           </form>
