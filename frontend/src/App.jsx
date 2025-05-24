@@ -10,6 +10,8 @@ import Footer from "./components/Footer";
 import ProductDetails from "./pages/ProductDetails";
 import BuyerProfile from "./pages/BuyerProfile";
 import Cart from "./pages/Cart";
+import SellerDashboard from "./pages/SellerDashboard";
+import AddProductForm from "./pages/AddProduct";
 
 const App = () => {
   return (
@@ -24,6 +26,8 @@ const App = () => {
         <Route path="/product/:product" element={<ProductDetails />} />
         <Route path="/profile/:id" element={<BuyerProfile />} />
         <Route path="/cart/:id" element={<Cart />} />
+        <Route path="/seller/:id" element={<SellerDashboard />} />
+        <Route path="/seller/:id/newProduct" element={<AddProductForm />} />
       </Routes>
       <Footer />
     </BrowserRouter>
