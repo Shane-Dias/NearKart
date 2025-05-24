@@ -29,9 +29,26 @@ const Navbar = () => {
     "Others",
   ];
 
-  // Show first 6 categories, rest in dropdown
-  const visibleCategories = categories.slice(0, 6);
-  const dropdownCategories = categories.slice(6);
+  // Responsive category display
+  const getVisibleCategories = () => {
+    // On mobile: show first 3 categories
+    // On tablet: show first 4 categories
+    // On desktop: show first 6 categories
+    return {
+      mobile: categories.slice(0, 3),
+      tablet: categories.slice(0, 4),
+      desktop: categories.slice(0, 6),
+    };
+  };
+
+  const getDropdownCategories = () => {
+    return {
+      mobile: categories.slice(3),
+      tablet: categories.slice(4),
+      desktop: categories.slice(6),
+    };
+  };
+
   return (
     <div className="sticky top-0 z-50 bg-white shadow-lg border-b border-blue-100">
       {/* Main Navbar */}
@@ -174,58 +191,160 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Categories Bar */}
+      {/* Categories Bar - Responsive */}
       <div className="bg-blue-50 border-t border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center space-x-1 py-3">
-            {/* Visible Categories */}
-            {visibleCategories.map((category, index) => (
-              <button
-                key={index}
-                onClick={() => {
-                  const encoded = encodeURIComponent(category);
-                  navigate(`/category/${encoded}`);
-                  window.scrollTo(0, 0);
-                  setIsCategoryDropdownOpen(false);
-                }}
-                className="flex-shrink-0 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
-              >
-                {category}
-              </button>
-            ))}
-
-            {/* More Categories Dropdown */}
-            {dropdownCategories.length > 0 && (
-              <div className="relative">
-                <button
-                  onClick={() =>
-                    setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
-                  }
-                  className="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
-                >
-                  <span>More</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-
-                {/* Categories Dropdown Menu */}
-                {isCategoryDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-1 w-48 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200">
-                    {dropdownCategories.map((category, index) => (
-                      <button
-                        key={index}
-                        onClick={() => {
-                          const encoded = encodeURIComponent(category);
-                          navigate(`/category/${encoded}`);
-                          window.scrollTo(0, 0);
-                          setIsCategoryDropdownOpen(false);
-                        }}
-                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
-                      >
-                        {category}
-                      </button>
-                    ))}
+          <div className="flex items-center justify-between py-3">
+            {/* Categories Container with horizontal scroll on mobile */}
+            <div className="flex items-center space-x-1 flex-1 overflow-x-auto scrollbar-hide">
+              {/* Mobile: Show first 3 categories + More */}
+              <div className="sm:hidden flex items-center space-x-1 min-w-max">
+                {getVisibleCategories().mobile.map((category, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      const encoded = encodeURIComponent(category);
+                      navigate(`/category/${encoded}`);
+                      window.scrollTo(0, 0);
+                      setIsCategoryDropdownOpen(false);
+                    }}
+                    className="flex-shrink-0 px-3 py-2 text-xs font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                  >
+                    {category}
+                  </button>
+                ))}
+                {getDropdownCategories().mobile.length > 0 && (
+                  <div className="relative flex-shrink-0">
+                    <button
+                      onClick={() =>
+                        setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
+                      }
+                      className="flex items-center space-x-1 px-3 py-2 text-xs font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                    >
+                      <span>More</span>
+                      <ChevronDown className="h-3 w-3" />
+                    </button>
                   </div>
                 )}
+              </div>
+
+              {/* Tablet: Show first 4 categories + More */}
+              <div className="hidden sm:flex lg:hidden items-center space-x-1 min-w-max">
+                {getVisibleCategories().tablet.map((category, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      const encoded = encodeURIComponent(category);
+                      navigate(`/category/${encoded}`);
+                      window.scrollTo(0, 0);
+                      setIsCategoryDropdownOpen(false);
+                    }}
+                    className="flex-shrink-0 px-3 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                  >
+                    {category}
+                  </button>
+                ))}
+                {getDropdownCategories().tablet.length > 0 && (
+                  <div className="relative flex-shrink-0">
+                    <button
+                      onClick={() =>
+                        setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
+                      }
+                      className="flex items-center space-x-1 px-3 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                    >
+                      <span>More</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Desktop: Show first 6 categories + More */}
+              <div className="hidden lg:flex items-center space-x-1 min-w-max">
+                {getVisibleCategories().desktop.map((category, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      const encoded = encodeURIComponent(category);
+                      navigate(`/category/${encoded}`);
+                      window.scrollTo(0, 0);
+                      setIsCategoryDropdownOpen(false);
+                    }}
+                    className="flex-shrink-0 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                  >
+                    {category}
+                  </button>
+                ))}
+                {getDropdownCategories().desktop.length > 0 && (
+                  <div className="relative flex-shrink-0">
+                    <button
+                      onClick={() =>
+                        setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
+                      }
+                      className="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-blue-700 hover:text-blue-900 hover:bg-blue-100 rounded-lg transition-all duration-200 whitespace-nowrap"
+                    >
+                      <span>More</span>
+                      <ChevronDown className="h-4 w-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Categories Dropdown Menu - Positioned absolutely */}
+            {isCategoryDropdownOpen && (
+              <div className="absolute top-full left-4 right-4 sm:left-auto sm:right-auto sm:w-48 mt-1 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-200 max-h-64 overflow-y-auto">
+                {/* Mobile dropdown categories */}
+                <div className="sm:hidden">
+                  {getDropdownCategories().mobile.map((category, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const encoded = encodeURIComponent(category);
+                        navigate(`/category/${encoded}`);
+                        window.scrollTo(0, 0);
+                        setIsCategoryDropdownOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+                {/* Tablet dropdown categories */}
+                <div className="hidden sm:block lg:hidden">
+                  {getDropdownCategories().tablet.map((category, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const encoded = encodeURIComponent(category);
+                        navigate(`/category/${encoded}`);
+                        window.scrollTo(0, 0);
+                        setIsCategoryDropdownOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
+                {/* Desktop dropdown categories */}
+                <div className="hidden lg:block">
+                  {getDropdownCategories().desktop.map((category, index) => (
+                    <button
+                      key={index}
+                      onClick={() => {
+                        const encoded = encodeURIComponent(category);
+                        navigate(`/category/${encoded}`);
+                        window.scrollTo(0, 0);
+                        setIsCategoryDropdownOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition-colors duration-200"
+                    >
+                      {category}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
           </div>
