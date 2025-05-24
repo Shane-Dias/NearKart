@@ -124,7 +124,13 @@ const Navbar = () => {
               </div>
 
               {/* Shopping Cart */}
-              <button className="relative flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-600">
+              <button
+                onClick={() => {
+                  navigate("/cart/1");
+                  window.scrollTo(0, 0);
+                }}
+                className="relative flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-600"
+              >
                 <div className="relative">
                   <ShoppingCart className="h-6 w-6" />
                   {cartCount > 0 && (
