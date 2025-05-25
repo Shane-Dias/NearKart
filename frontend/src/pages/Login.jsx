@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AccountTypeModal from "../components/AccountTypeModal";
@@ -14,6 +14,30 @@ const Login = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [isRequestingOtp, setIsRequestingOtp] = useState(false);
   const navigate = useNavigate();
+
+  // ...rest of your imports
+
+  const RESEND_OTP_SECONDS = 30;
+
+  const [resendTimer, setResendTimer] = useState(0);
+  const timerRef = useRef(null);
+
+  // Start timer when OTP is sent
+  useEffect(() => {
+    if (otpSent) {
+      setResendTimer(RESEND_OTP_SECONDS);
+    }
+  }, [otpSent]);
+
+  // Timer countdown effect
+  useEffect(() => {
+    if (resendTimer > 0) {
+      timerRef.current = setTimeout(() => {
+        setResendTimer(resendTimer - 1);
+      }, 1000);
+    }
+    return () => clearTimeout(timerRef.current);
+  }, [resendTimer]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -149,11 +173,11 @@ const Login = () => {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("OTP resent to:", formData.email);
       alert("OTP resent successfully!");
-      // Clear current OTP
       setFormData((prev) => ({
         ...prev,
         otp: ["", "", "", ""],
       }));
+      setResendTimer(RESEND_OTP_SECONDS); // Restart timer
     } catch (error) {
       console.error("Resend OTP error:", error);
     } finally {
@@ -243,16 +267,21 @@ const Login = () => {
                 )}
 
                 {/* Resend OTP */}
+
                 <div className="mt-4 text-center">
                   <p className="text-sm text-gray-600">
                     Didn't receive the code?{" "}
                     <button
                       type="button"
                       onClick={handleResendOtp}
-                      disabled={isRequestingOtp}
+                      disabled={isRequestingOtp || resendTimer > 0}
                       className="font-medium text-blue-600 hover:text-blue-800 transition-colors duration-200 disabled:opacity-50"
                     >
-                      {isRequestingOtp ? "Sending..." : "Resend OTP"}
+                      {isRequestingOtp
+                        ? "Sending..."
+                        : resendTimer > 0
+                        ? `Resend OTP (${resendTimer}s)`
+                        : "Resend OTP"}
                     </button>
                   </p>
                 </div>
