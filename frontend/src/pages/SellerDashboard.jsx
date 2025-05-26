@@ -32,20 +32,20 @@ export default function SellerDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Welcome back, Seller
+                Your Store Dashboard
               </h1>
               <p className="text-gray-600 mt-1">
                 Manage your store and track your performance
               </p>
             </div>
-            <div className="flex items-center space-x-3">
+            {/* <div className="flex items-center space-x-3">
               <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                 <Bell className="h-5 w-5" />
               </button>
               <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors">
                 <Settings className="h-5 w-5" />
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
@@ -158,7 +158,10 @@ export default function SellerDashboard() {
               View Orders
             </button>
             <button
-              onClick={() => handleNavigation("inventory")}
+              onClick={() => {
+                handleNavigation("inventory");
+                window.scrollTo(0, 0);
+              }}
               className="flex items-center justify-center px-6 py-4 bg-white text-purple-600 border-2 border-purple-600 rounded-xl hover:bg-purple-50 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
             >
               <Warehouse className="h-5 w-5 mr-2" />
@@ -182,7 +185,10 @@ export default function SellerDashboard() {
               Recent Orders
             </h3>
             <button
-              onClick={() => handleNavigation("/all-orders")}
+              onClick={() => {
+                handleNavigation("orders");
+                window.scrollTo(0, 0);
+              }}
               className="px-4 py-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50 text-sm font-medium rounded-lg transition-colors"
             >
               View All Orders

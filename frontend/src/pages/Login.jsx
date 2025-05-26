@@ -13,15 +13,11 @@ const Login = () => {
   const [showAccountTypeModal, setShowAccountTypeModal] = useState(false);
   const [otpSent, setOtpSent] = useState(false);
   const [isRequestingOtp, setIsRequestingOtp] = useState(false);
-  const navigate = useNavigate();
-
-  // ...rest of your imports
-
-  const RESEND_OTP_SECONDS = 30;
-
   const [resendTimer, setResendTimer] = useState(0);
   const timerRef = useRef(null);
+  const navigate = useNavigate();
 
+  const RESEND_OTP_SECONDS = 30;
   // Start timer when OTP is sent
   useEffect(() => {
     if (otpSent) {

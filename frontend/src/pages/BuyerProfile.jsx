@@ -89,11 +89,11 @@ const UserProfile = () => {
   };
 
   const handleViewOrders = () => {
-    navigate("/orders");
+    navigate("orders");
   };
 
   const handleViewWishlist = () => {
-    navigate("/wishlist");
+    navigate("wishlist");
   };
 
   return (

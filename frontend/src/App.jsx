@@ -12,6 +12,7 @@ import BuyerProfile from "./pages/BuyerProfile";
 import Cart from "./pages/Cart";
 import SellerDashboard from "./pages/SellerDashboard";
 import AddProductForm from "./pages/AddProduct";
+import InventoryManagement from "./pages/InventoryManagement";
 
 const App = () => {
   return (
@@ -28,6 +29,7 @@ const App = () => {
         <Route path="/cart/:id" element={<Cart />} />
         <Route path="/seller/:id" element={<SellerDashboard />} />
         <Route path="/seller/:id/newProduct" element={<AddProductForm />} />
+        <Route path="/seller/:id/inventory" element={<InventoryManagement />} />
       </Routes>
       <Footer />
     </BrowserRouter>
