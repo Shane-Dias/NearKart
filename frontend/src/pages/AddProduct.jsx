@@ -9,6 +9,7 @@ const AddProductForm = () => {
     discount: 0,
     sellingPrice: 0,
     stock: 0,
+    lowTresholdCount: 0,
     images: [],
     category: "",
     brand: "",
@@ -21,12 +22,20 @@ const AddProductForm = () => {
   const [newSpec, setNewSpec] = useState({ key: "", value: "" });
 
   const categories = [
-    "Groceries",
-    "Electronics",
-    "Fashion",
+    "Grocery & Food",
+    "Electronics & Gadgets",
+    "Clothing & Fashion",
     "Home & Kitchen",
-    "Beauty",
-    "Toys",
+    "Health & Beauty",
+    "Books & Stationery",
+    "Sports & Fitness",
+    "Toys & Games",
+    "Jewelry & Accessories",
+    "Automotive",
+    "Hardware & Tools",
+    "Pet Supplies",
+    "Art & Crafts",
+    "Others",
   ];
 
   const returnPolicies = [
@@ -291,6 +300,27 @@ const AddProductForm = () => {
                       setFormData({
                         ...formData,
                         stock: parseInt(e.target.value) || 0,
+                      })
+                    }
+                    className="w-full outline-none p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                    min="0"
+                    placeholder="0"
+                    required
+                  />
+                </div>
+
+                {/* Treshold */}
+                <div className="space-y-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Low Treshold Count <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.lowTresholdCount}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        lowTresholdCount: parseInt(e.target.value) || 0,
                       })
                     }
                     className="w-full outline-none p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
