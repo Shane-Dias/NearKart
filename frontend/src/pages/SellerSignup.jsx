@@ -363,6 +363,7 @@ const SellerSignup = () => {
                   </div>
                   <select
                     name="gender"
+                    required
                     value={formData.gender}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all appearance-none bg-white ${
