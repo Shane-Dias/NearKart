@@ -21,7 +21,7 @@ const BuyerSignup = () => {
     address: "",
     city: "",
     pincode: "",
-    role: "buyer",
+    role: "Buyer",
   });
 
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -191,16 +191,33 @@ const BuyerSignup = () => {
     setOtpLoading(true);
 
     try {
-      // Simulate API call to send OTP
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const res = await fetch("http://localhost:5000/api/buyer/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: formData.firstName,
+          lastname: formData.lastName,
+          email: formData.email,
+          phoneNo: formData.phone,
+          gender: formData.gender,
+          city: formData.city,
+          pincode: formData.pincode,
+          deliveryAddress: formData.address,
+        }),
+      });
 
-      // In real implementation, make API call here
-      console.log("Sending OTP to:", formData.email);
+      const data = await res.json();
 
-      setOtpSent(true);
-      setCanResend(false);
-      setCountdown(60); // 60 seconds countdown
-      alert(`OTP sent to ${formData.email}`);
+      if (res.ok) {
+        setOtpSent(true);
+        setCanResend(false);
+        setCountdown(60);
+        alert(`OTP sent to ${formData.email}`);
+      } else {
+        alert(data.msg || "Failed to send OTP");
+      }
     } catch (error) {
       console.error("Error sending OTP:", error);
       alert("Failed to send OTP. Please try again.");
@@ -216,11 +233,28 @@ const BuyerSignup = () => {
     setOtp(["", "", "", ""]);
 
     try {
-      // Simulate API call to resend OTP
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const response = await fetch("http://localhost:5000/api/buyer/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstname: formData.firstName,
+          lastname: formData.lastName,
+          email: formData.email,
+          phoneNo: formData.phone,
+          gender: formData.gender,
+          city: formData.city,
+          pincode: formData.pincode,
+          deliveryAddress: formData.address,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) throw new Error(data.msg || "Failed to resend OTP");
 
       console.log("Resending OTP to:", formData.email);
-
       setCanResend(false);
       setCountdown(60);
       alert("OTP resent successfully!");
@@ -236,25 +270,38 @@ const BuyerSignup = () => {
     e.preventDefault();
 
     if (!otpSent) {
-      // First step: Request OTP
       await handleRequestOtp();
     } else {
-      // Second step: Verify OTP and create account
       if (!validateOtp()) return;
 
-      const otpString = otp.join("");
-      console.log("Verifying OTP:", otpString);
-      console.log("Form data:", formData);
+      const otpString = otp.join(""); // assuming otp is an array
 
       try {
-        // In real implementation, verify OTP with backend
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const res = await fetch("http://localhost:5000/api/buyer/verify-otp", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            otp: otpString,
+          }),
+        });
 
-        alert("Account created successfully!");
-        // navigate("/dashboard");
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("Account created successfully!");
+          // navigate("/dashboard");
+        } else {
+          setErrors({
+            ...errors,
+            otp: data.msg || "Invalid OTP. Please try again.",
+          });
+        }
       } catch (error) {
         console.error("Error verifying OTP:", error);
-        setErrors({ ...errors, otp: "Invalid OTP. Please try again." });
+        alert("Something went wrong. Please try again.");
       }
     }
   };

@@ -5,7 +5,7 @@ const BuyerSchema = new mongoose.Schema(
     firstname: { type: String, required: true },
     lastname: { type: String },
     email: { type: String, required: true, unique: true },
-    gender: { type: String, enum: ["Male", "Female", "Other"] },
+    gender: { type: String, enum: ["male", "female", "other"] },
     phoneNo: { type: String, required: true },
     city: { type: String, required: true },
     pincode: { type: String, required: true },

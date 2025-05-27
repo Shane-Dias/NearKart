@@ -19,7 +19,7 @@ export const signupBuyer = async (req, res) => {
   if (existing) return res.status(400).json({ msg: "Email already exists" });
 
   const otp = Math.floor(1000 + Math.random() * 9000).toString();
-  console.log(otp);
+  console.log(`OTP for ${email} is ${otp}`);
 
   // Send OTP email
   try {
@@ -44,7 +44,7 @@ export const signupBuyer = async (req, res) => {
       },
       expires: Date.now() + 5 * 60 * 1000, // 5 min validity
     });
-    console.log(otpStore);
+    console.log(`Buyer details before verification:${otpStore}`);
     res.status(200).json({ msg: "OTP sent to email" });
   } catch (err) {
     res.status(500).json({ msg: "Failed to send OTP", error: err.message });
@@ -55,7 +55,6 @@ export const verifyBuyerOtp = async (req, res) => {
   const { email, otp } = req.body;
 
   const entry = otpStore.get(email);
-  console.log(entry);
   if (!entry)
     return res.status(400).json({ msg: "No OTP found. Please signup again." });
 
@@ -68,6 +67,7 @@ export const verifyBuyerOtp = async (req, res) => {
 
   const buyer = new Buyer(entry.data);
   await buyer.save();
+  console.log(`Buyer Account Created`);
 
   otpStore.delete(email);
   res.status(201).json({ msg: "Signup successful", buyer });
