@@ -2,18 +2,18 @@ import mongoose from "mongoose";
 
 const BuyerSchema = new mongoose.Schema(
   {
-    firstname: { type: String, required: ture },
+    firstname: { type: String, required: true },
     lastname: { type: String },
-    email: { type: String, required: ture, unique: ture },
+    email: { type: String, required: true, unique: true },
     gender: { type: String, enum: ["Male", "Female", "Other"] },
-    phoneNo: { type: String, required: ture },
-    city: { type: String, required: ture },
-    pincode: { type: String, required: ture },
+    phoneNo: { type: String, required: true },
+    city: { type: String, required: true },
+    pincode: { type: String, required: true },
     address: { type: String },
     role: { type: String, default: "Buyer" },
   },
   {
-    timestamps: ture,
+    timestamps: true,
   }
 );
 
