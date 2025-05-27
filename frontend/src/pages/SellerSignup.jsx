@@ -20,13 +20,11 @@ const SellerSignup = () => {
     ownerName: "",
     gender: "",
     email: "",
-    phone: "",
+    phoneNo: "",
     businessAddress: "",
     city: "",
     pincode: "",
     shopCategory: "",
-    shopLogo: null,
-    governmentId: null,
     role: "seller",
   });
 
@@ -39,6 +37,8 @@ const SellerSignup = () => {
   const [otpLoading, setOtpLoading] = useState(false);
   const [otpTimer, setOtpTimer] = useState(0);
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [shopLogo, setShopLogo] = useState(null);
+  const [governmentId, setGovernmentId] = useState(null);
 
   const shopCategories = [
     "Grocery & Food",
@@ -195,9 +195,10 @@ const SellerSignup = () => {
     else if (!/\S+@\S+\.\S+/.test(formData.email))
       newErrors.email = "Invalid email format";
 
-    if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
-    else if (!/^\+?[\d\s-()]{10,}$/.test(formData.phone)) {
-      newErrors.phone = "Invalid phone number format";
+    if (!formData.phoneNo.trim())
+      newErrors.phoneNo = "Phone number is required";
+    else if (!/^\+?[\d\s-()]{10,}$/.test(formData.phoneNo)) {
+      newErrors.phoneNo = "Invalid phone number format";
     }
 
     if (!formData.businessAddress.trim())
@@ -218,38 +219,33 @@ const SellerSignup = () => {
   };
 
   const requestOtp = async () => {
-    console.log("Form data:", formData);
     if (!validate()) return;
+    const form = new FormData();
+    Object.entries(formData).forEach(([key, value]) => form.append(key, value));
+    if (shopLogo) form.append("shopLogo", shopLogo);
+    if (governmentId) form.append("governmentId", governmentId);
+    console.log("Form", form);
 
-    setOtpLoading(true);
-
-    // Simulate API call to send OTP
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate network delay
+      const res = await fetch("http://localhost:5000/api/seller/signup", {
+        method: "POST",
+        body: form,
+      });
 
-      setOtpSent(true);
-      setOtpTimer(60); // 60 seconds countdown
-
-      // Start countdown timer
-      const timer = setInterval(() => {
-        setOtpTimer((prev) => {
-          if (prev <= 1) {
-            clearInterval(timer);
-            return 0;
-          }
-          return prev - 1;
-        });
-      }, 1000);
-
-      alert(`OTP has been sent to ${formData.email}`);
-    } catch (error) {
-      alert("Failed to send OTP. Please try again.");
-    } finally {
-      setOtpLoading(false);
+      const data = await res.json();
+      if (res.ok) {
+        alert("OTP sent to your email");
+        setOtpSent(true);
+      } else {
+        alert(data.msg || "Failed to send OTP");
+      }
+    } catch (err) {
+      alert("Error sending OTP");
+      console.error(err);
     }
   };
 
-  const verifyOtpAndSubmit = () => {
+  const verifyOtpAndSubmit = async () => {
     const otpString = otp.join("");
 
     if (otpString.length !== 4) {
@@ -257,13 +253,28 @@ const SellerSignup = () => {
       return;
     }
 
-    // In a real app, you would verify the OTP with your backend
-    console.log("Verifying OTP:", otpString);
-    console.log("Seller form data:", formData);
+    try {
+      const res = await fetch("http://localhost:5000/api/seller/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: formData.email,
+          otp: otp.join(""),
+        }),
+      });
+      console.log("Otp:", otp.join(""));
 
-    alert(
-      "OTP verified successfully! Seller account created. Please wait for verification."
-    );
+      const data = await res.json();
+      if (res.ok) {
+        alert("Seller account created successfully!");
+        // Redirect or reset state
+      } else {
+        alert(data.msg || "OTP verification failed");
+      }
+    } catch (err) {
+      alert("Error verifying OTP");
+      console.error(err);
+    }
   };
 
   const resendOtp = () => {
@@ -472,17 +483,17 @@ const SellerSignup = () => {
                   </div>
                   <input
                     type="tel"
-                    name="phone"
-                    value={formData.phone}
+                    name="phoneNo"
+                    value={formData.phoneNo}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-3 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ${
-                      errors.phone ? "border-red-500" : "border-gray-300"
+                      errors.phoneNo ? "border-red-500" : "border-gray-300"
                     }`}
                     placeholder="+91 1234567890"
                   />
                 </div>
-                {errors.phone && (
-                  <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+                {errors.phoneNo && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phoneNo}</p>
                 )}
               </div>
             </div>

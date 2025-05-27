@@ -4,7 +4,6 @@ import Seller from "../models/Seller.js";
 const otpStore = new Map();
 
 export const signupSeller = async (req, res) => {
-  console.log("Seller Data:", req.body);
   const {
     shopName,
     ownerName,
@@ -24,12 +23,12 @@ export const signupSeller = async (req, res) => {
   console.log("Otp for seller:", otp);
 
   try {
-    await transporter.sendMail({
-      from: `"NearKart" <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: "Your OTP for NearKart Signup",
-      html: `<h3>OTP: ${otp}</h3><p>This OTP is valid for 5 minutes.</p>`,
-    });
+    // await transporter.sendMail({
+    //   from: `"NearKart" <${process.env.MAIL_USER}>`,
+    //   to: email,
+    //   subject: "Your OTP for NearKart Signup",
+    //   html: `<h3>OTP: ${otp}</h3><p>This OTP is valid for 5 minutes.</p>`,
+    // });
 
     otpStore.set(email, {
       otp,
@@ -65,8 +64,10 @@ export const verifySellerOtp = async (req, res) => {
 
   if (!entry || Date.now() > entry.expires)
     return res.status(400).json({ msg: "OTP expired or not found" });
+  console.log("1");
 
   if (entry.otp !== otp) return res.status(400).json({ msg: "Incorrect OTP" });
+  console.log("2");
 
   try {
     const newSeller = new Seller({
