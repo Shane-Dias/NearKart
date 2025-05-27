@@ -2,9 +2,9 @@ import mongoose from "mongoose";
 
 const SellerSchema = new mongoose.Schema(
   {
-    businessName: { type: String, required: true },
+    shopName: { type: String, required: true },
     ownerName: { type: String, required: true },
-    gender: { type: String, enum: ["Male", "Female", "Other"] },
+    gender: { type: String, enum: ["male", "female", "other"] },
     shopCategory: {
       type: String,
       enum: [
@@ -31,7 +31,7 @@ const SellerSchema = new mongoose.Schema(
     pincode: { type: String, required: true },
     businessAddress: { type: String, required: true },
     shopLogo: { type: String, default: "" },
-    licenseDocument: { type: String, default: "" },
+    governmentId: { type: String, default: "" },
   },
   {
     timestamps: true,

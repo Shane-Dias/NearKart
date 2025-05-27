@@ -218,6 +218,7 @@ const SellerSignup = () => {
   };
 
   const requestOtp = async () => {
+    console.log("Form data:", formData);
     if (!validate()) return;
 
     setOtpLoading(true);
