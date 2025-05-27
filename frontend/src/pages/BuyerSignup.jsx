@@ -10,6 +10,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
 
 const BuyerSignup = () => {
   const [formData, setFormData] = useState({
@@ -95,7 +96,7 @@ const BuyerSignup = () => {
     setLocationLoading(true);
 
     if (!navigator.geolocation) {
-      alert("Geolocation is not supported by this browser.");
+      toast.warn("Geolocation is not supported by this browser.");
       setLocationLoading(false);
       return;
     }
@@ -124,7 +125,7 @@ const BuyerSignup = () => {
           }
         } catch (error) {
           console.error("Error fetching address:", error);
-          alert("Unable to fetch address. Please enter manually.");
+          toast.warn("Unable to fetch address. Please enter manually.");
         } finally {
           setLocationLoading(false);
         }
@@ -133,16 +134,18 @@ const BuyerSignup = () => {
         setLocationLoading(false);
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            alert("Location access denied. Please enter address manually.");
+            toast.warn(
+              "Location access denied. Please enter address manually."
+            );
             break;
           case error.POSITION_UNAVAILABLE:
-            alert("Location information unavailable.");
+            toast.warn("Location information unavailable.");
             break;
           case error.TIMEOUT:
-            alert("Location request timed out.");
+            toast.warn("Location request timed out.");
             break;
           default:
-            alert("An unknown error occurred.");
+            toast.warn("An unknown error occurred.");
             break;
         }
       },
@@ -214,9 +217,9 @@ const BuyerSignup = () => {
         setOtpSent(true);
         setCanResend(false);
         setCountdown(60);
-        alert(`OTP sent to ${formData.email}`);
+        toast.success(`OTP sent to ${formData.email}`);
       } else {
-        alert(data.msg || "Failed to send OTP");
+        toast.error(data.msg || "Failed to send OTP");
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
@@ -257,10 +260,10 @@ const BuyerSignup = () => {
       console.log("Resending OTP to:", formData.email);
       setCanResend(false);
       setCountdown(60);
-      alert("OTP resent successfully!");
+      toast.success("OTP resent successfully!");
     } catch (error) {
       console.error("Error resending OTP:", error);
-      alert("Failed to resend OTP. Please try again.");
+      toast.error("Failed to resend OTP. Please try again.");
     } finally {
       setOtpLoading(false);
     }
@@ -291,8 +294,8 @@ const BuyerSignup = () => {
         const data = await res.json();
 
         if (res.ok) {
-          alert("Account created successfully!");
-          // navigate("/dashboard");
+          toast.success("Account created successfully!");
+          window.scrollTo(0, 0);
         } else {
           setErrors({
             ...errors,
@@ -301,13 +304,14 @@ const BuyerSignup = () => {
         }
       } catch (error) {
         console.error("Error verifying OTP:", error);
-        alert("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     }
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-6 px-4 sm:px-6 lg:px-8">
+      <ToastContainer />
       <div className="max-w-md mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
