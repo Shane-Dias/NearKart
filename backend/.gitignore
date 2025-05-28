@@ -4,6 +4,7 @@
 .env.*.local
 *.env
 .envrc
+endpoints.txt
 
 ## Dependency directories ##
 node_modules/

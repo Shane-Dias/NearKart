@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Mail, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import AccountTypeModal from "../components/AccountTypeModal";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -17,7 +18,7 @@ const Login = () => {
   const timerRef = useRef(null);
   const navigate = useNavigate();
 
-  const RESEND_OTP_SECONDS = 30;
+  const RESEND_OTP_SECONDS = 60;
   // Start timer when OTP is sent
   useEffect(() => {
     if (otpSent) {
@@ -120,15 +121,22 @@ const Login = () => {
     if (!validateEmail()) {
       return;
     }
-
     setIsRequestingOtp(true);
 
-    // Simulate API call to send OTP
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("OTP sent to:", formData.email);
-      setOtpSent(true);
-      alert(`OTP sent to ${formData.email}!`); // Replace with actual notification
+      const res = await fetch("http://localhost:5000/api/user/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: formData.email }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        console.log("OTP sent to:", formData.email);
+        setOtpSent(true);
+        toast.info(`OTP sent to ${formData.email}!`);
+      } else {
+        toast.error(data.message || "Failed to send OTP");
+      }
     } catch (error) {
       console.error("OTP request error:", error);
       setErrors({ email: "Failed to send OTP. Please try again." });
@@ -146,15 +154,28 @@ const Login = () => {
 
     setIsLoading(true);
 
-    // Simulate OTP verification
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
       const otpString = formData.otp.join("");
-      console.log("Sign in attempt:", {
-        email: formData.email,
-        otp: otpString,
+      const res = await fetch("http://localhost:5000/api/user/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email: formData.email, otp: otpString }),
       });
-      alert("Sign in successful!"); // Replace with actual navigation
+      const data = await res.json();
+      if (res.ok) {
+        console.log("Sign in done:", data.role, data.user);
+        toast.success("Sign in successful!");
+        if (data.role == "buyer") {
+          navigate(`/profile/${data.user.id}`);
+          window.scrollTo(0, 0);
+        } else {
+          navigate(`/seller/${data.user.id}`);
+          window.scrollTo(0, 0);
+        }
+      } else {
+        toast.error(data.message || "Invaild Otp");
+      }
     } catch (error) {
       console.error("Sign in error:", error);
       setErrors({ otp: "Invalid OTP. Please try again." });
@@ -168,7 +189,7 @@ const Login = () => {
     try {
       await new Promise((resolve) => setTimeout(resolve, 1500));
       console.log("OTP resent to:", formData.email);
-      alert("OTP resent successfully!");
+      toast.info("OTP resent successfully!");
       setFormData((prev) => ({
         ...prev,
         otp: ["", "", "", ""],
@@ -183,6 +204,7 @@ const Login = () => {
 
   return (
     <div className="h-5/6 bg-gradient-to-br pt-8 pb-8 from-blue-50 to-indigo-100 flex items-center justify-center ">
+      <ToastContainer />
       <div className="max-w-md w-full space-y-8">
         {/* Header */}
         <div className="text-center">
