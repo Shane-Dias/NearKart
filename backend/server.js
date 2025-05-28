@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import buyerRoutes from "./routes/buyerRoutes.js ";
 import sellerRoutes from "./routes/sellerRoutes.js";
+import loginRoutes from "./routes/loginRoutes.js";
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ connectDB();
 
 app.use("/api/buyer", buyerRoutes);
 app.use("/api/seller", sellerRoutes);
+app.use("/api/user", loginRoutes);
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Server started on port ${process.env.PORT || 5000}`);

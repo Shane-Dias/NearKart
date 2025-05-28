@@ -1,4 +1,4 @@
-import Buyer from "../models/buyer.js";
+import Buyer from "../models/Buyer.js";
 import { transporter } from "../config/mail.js";
 
 const otpStore = new Map(); // email -> { otp, data, expires }
