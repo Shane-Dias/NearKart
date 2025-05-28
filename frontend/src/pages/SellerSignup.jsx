@@ -231,7 +231,7 @@ const SellerSignup = () => {
     try {
       const res = await fetch("http://localhost:5000/api/seller/signup", {
         method: "POST",
-        body: form,
+        body: form, //browser automatically sets headers=> Content-Type: multipart/form-data
       });
 
       setOtpTimer(60); // 60 seconds countdown
