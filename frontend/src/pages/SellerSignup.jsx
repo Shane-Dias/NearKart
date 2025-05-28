@@ -220,6 +220,7 @@ const SellerSignup = () => {
 
   const requestOtp = async () => {
     if (!validate()) return;
+    setOtpLoading(true);
     const form = new FormData();
     Object.entries(formData).forEach(([key, value]) => form.append(key, value));
     if (shopLogo) form.append("shopLogo", shopLogo);
@@ -232,6 +233,19 @@ const SellerSignup = () => {
         body: form,
       });
 
+      setOtpTimer(60); // 60 seconds countdown
+
+      // Start countdown timer
+      const timer = setInterval(() => {
+        setOtpTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(timer);
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+
       const data = await res.json();
       if (res.ok) {
         alert("OTP sent to your email");
@@ -242,6 +256,8 @@ const SellerSignup = () => {
     } catch (err) {
       alert("Error sending OTP");
       console.error(err);
+    } finally {
+      setOtpLoading(false);
     }
   };
 
