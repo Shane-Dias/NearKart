@@ -14,6 +14,7 @@ import {
   Clock,
 } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const SellerSignup = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +27,7 @@ const SellerSignup = () => {
     city: "",
     pincode: "",
     shopCategory: "",
-    role: "seller",
+    role: "Seller",
   });
 
   const [errors, setErrors] = useState({});
@@ -40,6 +41,7 @@ const SellerSignup = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [shopLogo, setShopLogo] = useState(null);
   const [governmentId, setGovernmentId] = useState(null);
+  const navigate = useNavigate();
 
   const shopCategories = [
     "Grocery & Food",
@@ -164,7 +166,9 @@ const SellerSignup = () => {
         setLocationLoading(false);
         switch (error.code) {
           case error.PERMISSION_DENIED:
-            toast.warn("Location access denied. Please enter address manually.");
+            toast.warn(
+              "Location access denied. Please enter address manually."
+            );
             break;
           case error.POSITION_UNAVAILABLE:
             toast.warn("Location information unavailable.");
@@ -274,6 +278,7 @@ const SellerSignup = () => {
       const res = await fetch("http://localhost:5000/api/seller/verify-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           email: formData.email,
           otp: otp.join(""),
@@ -284,7 +289,8 @@ const SellerSignup = () => {
       const data = await res.json();
       if (res.ok) {
         toast.success("Seller account created successfully!");
-        // Redirect or reset state
+        navigate(`/seller/${data.user.id}`);
+        window.scrollTo(0, 0);
       } else {
         toast.error(data.msg || "OTP verification failed");
       }
@@ -849,6 +855,21 @@ const SellerSignup = () => {
                   </div>
                 </div>
               )}
+              {/* Login Link */}
+              <div className="text-center pt-4">
+                <p className="text-sm text-gray-600">
+                  Already have an account?{" "}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
+                    className="text-blue-600 hover:text-blue-700 font-semibold"
+                  >
+                    Sign in
+                  </button>
+                </p>
+              </div>
             </div>
           </div>
         </div>

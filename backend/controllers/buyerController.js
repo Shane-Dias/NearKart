@@ -1,5 +1,6 @@
 import Buyer from "../models/Buyer.js";
 import { transporter } from "../config/mail.js";
+import jwt from "jsonwebtoken";
 
 const otpStore = new Map(); // email -> { otp, data, expires }
 
@@ -23,12 +24,12 @@ export const signupBuyer = async (req, res) => {
 
   // Send OTP email
   try {
-    await transporter.sendMail({
-      from: `"NearKart" <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: "Your OTP for NearKart Signup",
-      html: `<h3>Welcome to NearKart!</h3><p>Your OTP is: <strong>${otp}</strong></p>`,
-    });
+    // await transporter.sendMail({
+    //   from: `"NearKart" <${process.env.MAIL_USER}>`,
+    //   to: email,
+    //   subject: "Your OTP for NearKart Signup",
+    //   html: `<h3>Welcome to NearKart!</h3><p>Your OTP is: <strong>${otp}</strong></p>`,
+    // });
 
     otpStore.set(email, {
       otp,
@@ -65,10 +66,40 @@ export const verifyBuyerOtp = async (req, res) => {
 
   if (entry.otp !== otp) return res.status(400).json({ msg: "Invalid OTP" });
 
-  const buyer = new Buyer(entry.data);
-  await buyer.save();
-  console.log(`Buyer Account Created`);
+  try {
+    const buyer = new Buyer(entry.data);
+    await buyer.save();
 
-  otpStore.delete(email);
-  res.status(201).json({ msg: "Signup successful", buyer });
+    otpStore.delete(email);
+    const user = await Buyer.findOne({ email });
+
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in prod (HTTPS)
+      sameSite: "Lax", // or "None" if frontend & backend are on different domains with HTTPS
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(201).json({
+      msg: "Signup successful and logged in",
+      role: user.role,
+      user: {
+        id: user._id,
+        name: `${user.firstname} ${user.lastname}`,
+        email: user.email,
+      },
+    });
+  } catch (err) {
+    console.error("Verification error:", err);
+
+    res.status(500).json({ msg: "Registration failed", error: err.message });
+  }
 };

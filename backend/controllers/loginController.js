@@ -45,11 +45,9 @@ export const verifyLoginOtpAndLogin = async (req, res) => {
 
   // Check user type (Buyer or Seller)
   let user = await Buyer.findOne({ email });
-  let role = "buyer";
 
   if (!user) {
     user = await Seller.findOne({ email });
-    role = "seller";
   }
 
   // Generate JWT
@@ -66,7 +64,7 @@ export const verifyLoginOtpAndLogin = async (req, res) => {
 
   res.status(200).json({
     message: "Login successful",
-    role,
+    role: user.role,
     user: {
       id: user._id,
       name:

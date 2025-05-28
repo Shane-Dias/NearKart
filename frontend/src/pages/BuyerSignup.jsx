@@ -218,6 +218,7 @@ const BuyerSignup = () => {
         setCanResend(false);
         setCountdown(60);
         toast.success(`OTP sent to ${formData.email}`);
+        window.scrollTo(0, 0);
       } else {
         toast.error(data.msg || "Failed to send OTP");
       }
@@ -285,6 +286,7 @@ const BuyerSignup = () => {
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include",
           body: JSON.stringify({
             email: formData.email,
             otp: otpString,
@@ -295,6 +297,7 @@ const BuyerSignup = () => {
 
         if (res.ok) {
           toast.success("Account created successfully!");
+          navigate(`/profile/${data.user.id}`);
           window.scrollTo(0, 0);
         } else {
           setErrors({

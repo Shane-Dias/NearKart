@@ -1,5 +1,6 @@
 import { transporter } from "../config/mail.js";
 import Seller from "../models/Seller.js";
+import jwt from "jsonwebtoken";
 
 const otpStore = new Map();
 
@@ -23,12 +24,12 @@ export const signupSeller = async (req, res) => {
   console.log("Otp for seller:", otp);
 
   try {
-    await transporter.sendMail({
-      from: `"NearKart" <${process.env.MAIL_USER}>`,
-      to: email,
-      subject: "Your OTP for NearKart Signup",
-      html: `<h3>OTP: ${otp}</h3><p>This OTP is valid for 5 minutes.</p>`,
-    });
+    // await transporter.sendMail({
+    //   from: `"NearKart" <${process.env.MAIL_USER}>`,
+    //   to: email,
+    //   subject: "Your OTP for NearKart Signup",
+    //   html: `<h3>OTP: ${otp}</h3><p>This OTP is valid for 5 minutes.</p>`,
+    // });
 
     otpStore.set(email, {
       otp,
@@ -77,8 +78,35 @@ export const verifySellerOtp = async (req, res) => {
     await newSeller.save();
     otpStore.delete(email);
 
-    res.status(201).json({ msg: "Seller registered successfully" });
+    const user = await Seller.findOne({ email });
+
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // true in prod (HTTPS)
+      sameSite: "Lax", // or "None" if frontend & backend are on different domains with HTTPS
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(201).json({
+      msg: "Seller registered successfully and LoggedIn",
+      role: user.role,
+      user: {
+        id: user._id,
+        name: user.ownerName,
+        email: user.email,
+      },
+    });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ msg: "Registration failed", error: err.message });
   }
 };

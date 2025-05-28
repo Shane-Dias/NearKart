@@ -32,6 +32,7 @@ const SellerSchema = new mongoose.Schema(
     businessAddress: { type: String, required: true },
     shopLogo: { type: String, default: "" },
     governmentId: { type: String, default: "" },
+    role: { type: String, default: "Seller" },
   },
   {
     timestamps: true,
