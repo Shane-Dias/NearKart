@@ -64,10 +64,8 @@ export const verifySellerOtp = async (req, res) => {
 
   if (!entry || Date.now() > entry.expires)
     return res.status(400).json({ msg: "OTP expired or not found" });
-  console.log("1");
 
   if (entry.otp !== otp) return res.status(400).json({ msg: "Incorrect OTP" });
-  console.log("2");
 
   try {
     const newSeller = new Seller({
