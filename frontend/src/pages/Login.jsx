@@ -166,7 +166,7 @@ const Login = () => {
       if (res.ok) {
         console.log("Sign in done:", data.role, data.user);
         toast.success("Sign in successful!");
-        if (data.role == "buyer") {
+        if (data.role == "Buyer") {
           navigate(`/profile/${data.user.id}`);
           window.scrollTo(0, 0);
         } else {
@@ -269,7 +269,7 @@ const Login = () => {
                       value={digit}
                       onChange={(e) => handleOtpChange(index, e.target.value)}
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
-                      className={`w-12 h-12 text-center text-lg font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${
+                      className={`outline-none w-12 h-12 text-center text-lg font-semibold border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 ${
                         errors.otp
                           ? "border-red-300 bg-red-50"
                           : "border-gray-300"
