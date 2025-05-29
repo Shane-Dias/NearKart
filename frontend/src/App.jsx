@@ -31,11 +31,22 @@ const App = () => {
         )}
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/product/:product" element={<ProductDetails />} />
-        <Route path="/profile/:id" element={<BuyerProfile />} />
-        <Route path="/cart/:id" element={<Cart />} />
-        <Route path="/seller/:id" element={<SellerDashboard />} />
-        <Route path="/seller/:id/newProduct" element={<AddProductForm />} />
-        <Route path="/seller/:id/inventory" element={<InventoryManagement />} />
+        {!user && user.role !== "Seller" && (
+          <>
+            <Route path="/profile/:id" element={<BuyerProfile />} />
+            <Route path="/cart/:id" element={<Cart />} />
+          </>
+        )}
+        {!user && user.role !== "Seller" && (
+          <>
+            <Route path="/seller/:id" element={<SellerDashboard />} />
+            <Route path="/seller/:id/newProduct" element={<AddProductForm />} />
+            <Route
+              path="/seller/:id/inventory"
+              element={<InventoryManagement />}
+            />
+          </>
+        )}
 
         {/* Redirect all unknown URLs to Home */}
         <Route path="*" element={<Navigate to="/" replace />} />
