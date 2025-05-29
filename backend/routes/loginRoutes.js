@@ -1,4 +1,5 @@
 import {
+  logoutUser,
   sendLoginOtp,
   verifyLoginOtpAndLogin,
 } from "../controllers/loginController.js";
@@ -14,5 +15,7 @@ router.get("/me", authenticateUser, (req, res) => {
   const user = req.user; // added by auth middleware
   res.status(200).json({ user });
 });
+
+router.post("/logout", logoutUser);
 
 export default router;

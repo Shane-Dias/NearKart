@@ -80,3 +80,12 @@ export const verifyLoginOtpAndLogin = async (req, res) => {
     },
   });
 };
+
+export const logoutUser = async (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Lax", // or "None" if frontend is on a different domain
+  });
+  res.status(200).json({ msg: "Logged out successfully" });
+};
