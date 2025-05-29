@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate  } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import BuyerSignup from "./pages/BuyerSignup";
@@ -30,6 +30,9 @@ const App = () => {
         <Route path="/seller/:id" element={<SellerDashboard />} />
         <Route path="/seller/:id/newProduct" element={<AddProductForm />} />
         <Route path="/seller/:id/inventory" element={<InventoryManagement />} />
+
+        {/* Redirect all unknown URLs to Home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer />
     </BrowserRouter>
