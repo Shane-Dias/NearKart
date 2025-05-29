@@ -103,3 +103,30 @@ export const verifyBuyerOtp = async (req, res) => {
     res.status(500).json({ msg: "Registration failed", error: err.message });
   }
 };
+
+export const buyerProfile = async (req, res) => {
+  const _id = req.params.id;
+
+  try {
+    const requesterId = req.user.userId; // Set from auth middleware
+    const role = req.user.role;
+
+    if (requesterId !== _id ) {
+      return res.status(403).json({ msg: "Access denied" });
+    }
+
+    // 2. Fetch the buyer
+    const buyer = await Buyer.findById(_id).select(
+      "firstname lastname gender email phoneNo city address pincode"
+    );
+
+    if (!buyer) {
+      return res.status(404).json({ msg: "No buyer found" });
+    }
+
+    res.status(200).json({ buyer });
+  } catch (error) {
+    console.error("Error fetching user details:", error);
+    res.status(500).json({ msg: "Server error" });
+  }
+};
