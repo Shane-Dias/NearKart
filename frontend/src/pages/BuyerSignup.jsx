@@ -207,7 +207,7 @@ const BuyerSignup = () => {
           gender: formData.gender,
           city: formData.city,
           pincode: formData.pincode,
-          deliveryAddress: formData.address,
+          address: formData.address,
         }),
       });
 
