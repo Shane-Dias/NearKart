@@ -299,6 +299,7 @@ const BuyerSignup = () => {
           toast.success("Account created successfully!");
           navigate(`/profile/${data.user.id}`);
           window.scrollTo(0, 0);
+          window.location.reload();
         } else {
           setErrors({
             ...errors,

@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route, Navigate  } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "./pages/Home";
 import Navbar from "./components/Navbar";
 import BuyerSignup from "./pages/BuyerSignup";
@@ -13,16 +13,22 @@ import Cart from "./pages/Cart";
 import SellerDashboard from "./pages/SellerDashboard";
 import AddProductForm from "./pages/AddProduct";
 import InventoryManagement from "./pages/InventoryManagement";
+import { useAuth } from "./context/AuthContext";
 
 const App = () => {
+  const { user } = useAuth();
   return (
     <BrowserRouter>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/signup/buyer" element={<BuyerSignup />} />
-        <Route path="/signup/seller" element={<SellerSignup />} />
-        <Route path="/login" element={<Login />} />
+        {!user && (
+          <>
+            <Route path="/signup/buyer" element={<BuyerSignup />} />
+            <Route path="/signup/seller" element={<SellerSignup />} />
+            <Route path="/login" element={<Login />} />
+          </>
+        )}
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/product/:product" element={<ProductDetails />} />
         <Route path="/profile/:id" element={<BuyerProfile />} />

@@ -169,9 +169,11 @@ const Login = () => {
         if (data.role == "Buyer") {
           navigate(`/profile/${data.user.id}`);
           window.scrollTo(0, 0);
+          window.location.reload();
         } else {
           navigate(`/seller/${data.user.id}`);
           window.scrollTo(0, 0);
+          window.location.reload();
         }
       } else {
         toast.error(data.message || "Invaild Otp");

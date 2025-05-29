@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Search, ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react";
 import AccountTypeModal from "./AccountTypeModal";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,6 +11,7 @@ const Navbar = () => {
   const [cartCount, setCartCount] = useState(3);
   const [showAccountTypeModal, setShowAccountTypeModal] = useState(false);
   const navigate = useNavigate();
+  const { user, setUser } = useAuth();
 
   // Sample categories with icons
   const categories = [
@@ -47,6 +49,21 @@ const Navbar = () => {
       tablet: categories.slice(4),
       desktop: categories.slice(6),
     };
+  };
+
+  const logout = async () => {
+    try {
+      await fetch("http://localhost:5000/api/user/logout", {
+        method: "POST",
+        credentials: "include", // this is needed to send the cookie
+      });
+
+      setUser(null);
+      navigate("/login");
+      window.scrollTo(0, 0);
+    } catch (err) {
+      console.error("Logout failed", err);
+    }
   };
 
   return (
@@ -108,34 +125,51 @@ const Navbar = () => {
                 {/* User Dropdown Menu */}
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
-                    <button
-                      onClick={() => {
-                        navigate("/login");
-                        window.scrollTo(0, 0);
-                      }}
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
-                    >
-                      Sign In
-                    </button>
-                    <button
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
-                      onClick={() => setShowAccountTypeModal(true)}
-                    >
-                      Create Account
-                    </button>
-                    <hr className="my-2" />
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                    >
-                      Your Orders
-                    </a>
-                    <a
-                      href="#"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                    >
-                      Wishlist
-                    </a>
+                    {user ? (
+                      <button
+                        onClick={() => {
+                          logout();
+                        }}
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                      >
+                        Logout
+                      </button>
+                    ) : (
+                      <div>
+                        <button
+                          onClick={() => {
+                            navigate("/login");
+                            window.scrollTo(0, 0);
+                          }}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                        >
+                          Sign In
+                        </button>
+                        <button
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                          onClick={() => setShowAccountTypeModal(true)}
+                        >
+                          Create Account
+                        </button>
+                      </div>
+                    )}
+                    {user && user.role === "Buyer" && (
+                      <div>
+                        <hr className="my-2" />
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          Your Orders
+                        </a>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
+                        >
+                          Wishlist
+                        </a>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

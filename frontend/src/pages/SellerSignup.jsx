@@ -291,6 +291,7 @@ const SellerSignup = () => {
         toast.success("Seller account created successfully!");
         navigate(`/seller/${data.user.id}`);
         window.scrollTo(0, 0);
+        window.location.reload();
       } else {
         toast.error(data.msg || "OTP verification failed");
       }
