@@ -126,14 +126,30 @@ const Navbar = () => {
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
                     {user ? (
-                      <button
-                        onClick={() => {
-                          logout();
-                        }}
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
-                      >
-                        Logout
-                      </button>
+                      <>
+                        <button
+                          onClick={() => {
+                            if (user.role === "Seller") {
+                              navigate(`/seller/${user.userId}`);
+                              window.scrollTo(0, 0);
+                            } else {
+                              navigate(`/profile/${user.userId}`);
+                              window.scrollTo(0, 0);
+                            }
+                          }}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                        >
+                          {user.role === "Seller" ? "Dashboard" : "My Profile"}
+                        </button>
+                        <button
+                          onClick={() => {
+                            logout();
+                          }}
+                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
+                        >
+                          Logout
+                        </button>
+                      </>
                     ) : (
                       <div>
                         <button
@@ -156,18 +172,12 @@ const Navbar = () => {
                     {user && user.role === "Buyer" && (
                       <div>
                         <hr className="my-2" />
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                        >
+                        <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left">
                           Your Orders
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-                        >
+                        </button>
+                        <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left">
                           Wishlist
-                        </a>
+                        </button>
                       </div>
                     )}
                   </div>
@@ -177,7 +187,7 @@ const Navbar = () => {
               {/* Shopping Cart */}
               <button
                 onClick={() => {
-                  navigate("/cart/1");
+                  navigate(`/cart/${user.userId}`);
                   window.scrollTo(0, 0);
                 }}
                 className="relative flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-600"
