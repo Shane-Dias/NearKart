@@ -68,9 +68,9 @@ export const verifyLoginOtpAndLogin = async (req, res) => {
     user: {
       id: user._id,
       name:
-        role === "buyer"
-          ? `${user.firstname} ${user.lastname}`
-          : user.ownerName,
+        role === "seller"
+          ? user.ownerName
+          : `${user.firstname} ${user.lastname}`,
       email: user.email,
     },
   });
