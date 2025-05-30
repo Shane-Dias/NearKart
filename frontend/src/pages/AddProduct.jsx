@@ -236,7 +236,7 @@ const AddProductForm = () => {
                       }
                       className="w-full outline-none pl-8 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
                       min="0"
-                      step="100"
+                      step="1"
                       placeholder="0.00"
                       required
                     />
