@@ -129,17 +129,17 @@ const Navbar = () => {
                       <>
                         <button
                           onClick={() => {
-                            if (user.role === "Seller") {
+                            if (user?.role === "Seller") {
                               navigate(`/seller/${user.userId}`);
                               window.scrollTo(0, 0);
                             } else {
-                              navigate(`/profile/${user.userId}`);
+                              navigate(`/profile/${user?.userId}`);
                               window.scrollTo(0, 0);
                             }
                           }}
                           className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left"
                         >
-                          {user.role === "Seller" ? "Dashboard" : "My Profile"}
+                          {user?.role === "Seller" ? "Dashboard" : "My Profile"}
                         </button>
                         <button
                           onClick={() => {

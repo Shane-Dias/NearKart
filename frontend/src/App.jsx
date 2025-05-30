@@ -31,13 +31,13 @@ const App = () => {
         )}
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/product/:product" element={<ProductDetails />} />
-        {!user && user.role !== "Seller" && (
+        {user && user.role !== "Seller" && (
           <>
             <Route path="/profile/:id" element={<BuyerProfile />} />
             <Route path="/cart/:id" element={<Cart />} />
           </>
         )}
-        {!user && user.role !== "Seller" && (
+        {user && user.role === "Seller" && (
           <>
             <Route path="/seller/:id" element={<SellerDashboard />} />
             <Route path="/seller/:id/newProduct" element={<AddProductForm />} />
