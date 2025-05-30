@@ -64,11 +64,12 @@ const ProductSchema = new mongoose.Schema(
   }
 );
 
-ProductSchema.pre("save", function (next) {
-  this.sellingPrice =
-    this.originalPrice - (this.originalPrice * this.discount) / 100;
-  next();
-});
+//No need for this frontend is managing the selling price
+// ProductSchema.pre("save", function (next) {
+//   this.sellingPrice =
+//     this.originalPrice - (this.originalPrice * this.discount) / 100;
+//   next();
+// });
 
 const Product = mongoose.model("Product", ProductSchema);
 export default Product;
