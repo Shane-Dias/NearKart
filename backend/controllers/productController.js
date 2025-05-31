@@ -2,8 +2,6 @@ import Product from "../models/Product.js";
 
 export const addNewProduct = async (req, res) => {
   try {
-    // 1. Check if files were uploaded
-    console.log(req.files);
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ msg: "At least 1 image is required" });
     }
@@ -20,6 +18,7 @@ export const addNewProduct = async (req, res) => {
       brand,
       deliveryCharges,
       returnPolicy,
+      specifications,
     } = req.body;
     const sellerId = req.params.id;
     const images = req.files.map((file) => file.path);
@@ -38,6 +37,7 @@ export const addNewProduct = async (req, res) => {
       returnPolicy,
       sellerId,
       images,
+      specifications,
     });
 
     await newProduct.save();

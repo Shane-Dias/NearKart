@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { Upload, X, ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
 
 const AddProductForm = () => {
   const [formData, setFormData] = useState({
@@ -20,6 +23,9 @@ const AddProductForm = () => {
 
   const [previewImages, setPreviewImages] = useState([]);
   const [newSpec, setNewSpec] = useState({ key: "", value: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const { id } = useParams();
+  const navigate = useNavigate();
 
   const categories = [
     "Grocery & Food",
@@ -99,14 +105,84 @@ const AddProductForm = () => {
     window.history.back();
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    // Handle form submission here
+    setIsLoading(true);
+
+    try {
+      const formDataToSend = new FormData();
+
+      // Append basic form fields (excluding images and specifications)
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key !== "images" && key !== "specifications") {
+          formDataToSend.append(key, value);
+        }
+      });
+
+      // Append specifications as JSON string
+      formDataToSend.append(
+        "specifications",
+        JSON.stringify(formData.specifications)
+      );
+
+      // Append actual image files (not the preview objects)
+      previewImages.forEach((imageObj, index) => {
+        formDataToSend.append("images", imageObj.file);
+      });
+
+      // Debug: Log what's being sent
+      console.log("Form data contents:");
+      for (let [key, value] of formDataToSend.entries()) {
+        console.log(key, value);
+      }
+
+      const sellerId = id;
+      const response = await axios.post(
+        `http://localhost:5000/api/product/addNewProduct/${sellerId}`,
+        formDataToSend,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true,
+        }
+      );
+
+      console.log("Product added:", response.data);
+      toast.success("Product added successfully!");
+
+      // Reset form properly
+      setFormData({
+        name: "",
+        description: "",
+        originalPrice: 0,
+        discount: 0,
+        sellingPrice: 0,
+        stock: 0,
+        lowTresholdCount: 0,
+        images: [],
+        category: "",
+        brand: "",
+        deliveryCharges: 0,
+        specifications: [],
+        returnPolicy: "",
+      });
+
+      // Clear preview images and revoke object URLs to prevent memory leaks
+      previewImages.forEach((img) => URL.revokeObjectURL(img.preview));
+      setPreviewImages([]);
+      navigate(`/seller/${sellerId}`);
+    } catch (err) {
+      toast.error(err.response?.data?.msg || "Failed to add product");
+      console.error("Error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 py-4 px-4 sm:px-6 lg:px-8">
+      <ToastContainer />
       <div className="max-w-4xl mx-auto">
         {/* Back Button */}
         <button
