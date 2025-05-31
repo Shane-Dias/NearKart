@@ -169,7 +169,7 @@ const Navbar = () => {
                         </button>
                       </div>
                     )}
-                    {user && user.role === "Buyer" && (
+                    {user && user?.role === "Buyer" && (
                       <div>
                         <hr className="my-2" />
                         <button className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 w-full text-left">
@@ -185,10 +185,10 @@ const Navbar = () => {
               </div>
 
               {/* Shopping Cart */}
-              {user && user.role === "Buyer" && (
+              {user && user?.role === "Buyer" && (
                 <button
                   onClick={() => {
-                    navigate(`/cart/${user.userId}`);
+                    navigate(`/cart/${user?.userId}`);
                     window.scrollTo(0, 0);
                   }}
                   className="relative flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-600"
