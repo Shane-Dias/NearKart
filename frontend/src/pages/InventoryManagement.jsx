@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Search,
   Plus,
@@ -17,56 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const InventoryManagement = () => {
   const navigate = useNavigate();
   const { id } = useParams();
-  const [products, setProducts] = useState([
-    {
-      id: 1,
-      name: "Wireless Bluetooth Headphones",
-      discount: "4%",
-      category: "Electronics",
-      price: 79.99,
-      stock: 45,
-      lowStockThreshold: 10,
-      status: "active",
-      image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=100&h=100&fit=crop",
-    },
-    {
-      id: 2,
-      name: "Premium Coffee Beans",
-      discount: "5%",
-      category: "Food & Beverage",
-      price: 24.99,
-      stock: 8,
-      lowStockThreshold: 15,
-      status: "active",
-      image:
-        "https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=100&h=100&fit=crop",
-    },
-    {
-      id: 3,
-      name: "Cotton T-Shirt",
-      discount: "5%",
-      category: "Clothing",
-      price: 19.99,
-      stock: 120,
-      lowStockThreshold: 20,
-      status: "active",
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=100&h=100&fit=crop",
-    },
-    {
-      id: 4,
-      name: "Smartphone Case",
-      discount: "9%",
-      category: "Electronics",
-      price: 15.99,
-      stock: 0,
-      lowStockThreshold: 25,
-      status: "inactive",
-      image:
-        "https://images.unsplash.com/photo-1585060544812-6b45742d762f?w=100&h=100&fit=crop",
-    },
-  ]);
+  const [products, setProducts] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -90,21 +41,52 @@ const InventoryManagement = () => {
     "Others",
   ];
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/product/inventory/${id}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        const data = await res.json();
+        console.log(data.products);
+        setProducts(data.products || []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setProducts([]);
+      }
+    };
+    fetchProducts();
+  }, [id]);
+
+  // Get product status based on stock
+  const getProductStatus = (product) => {
+    return product.stock === 0 ? "inactive" : "active";
+  };
+
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name
-      .toLowerCase()
+      ?.toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesCategory =
       selectedCategory === "all" || product.category === selectedCategory;
+
+    // Use computed status for filtering
+    const productStatus = getProductStatus(product);
     const matchesStatus =
-      selectedStatus === "all" || product.status === selectedStatus;
+      selectedStatus === "all" || productStatus === selectedStatus;
 
     return matchesSearch && matchesCategory && matchesStatus;
   });
 
   const getStockStatus = (product) => {
     if (product.stock === 0) return "out-of-stock";
-    if (product.stock <= product.lowStockThreshold) return "low-stock";
+    if (product.stock <= (product.lowStockThreshold || 5)) return "low-stock";
     return "in-stock";
   };
 
@@ -121,16 +103,52 @@ const InventoryManagement = () => {
     }
   };
 
-  const handleDeleteProduct = (id) => {
-    setProducts(products.filter((p) => p.id !== id));
+  const handleDeleteProduct = async (productId) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/product/${productId}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (res.ok) {
+        setProducts(products.filter((p) => p._id !== productId));
+      } else {
+        console.error("Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+    }
+  };
+
+  const getMediaUrl = (mediaPath) => {
+    if (!mediaPath) return "";
+
+    // If the path is already a full URL, return it as is
+    if (mediaPath.startsWith("http")) {
+      return mediaPath;
+    }
+
+    // Replace backslashes with forward slashes for web URLs
+    const formattedPath = mediaPath.replace(/\\/g, "/");
+
+    // Construct the full URL - adjust the base URL as needed
+    return `http://localhost:5000/${formattedPath}`;
   };
 
   const totalProducts = products.length;
   const lowStockProducts = products.filter(
-    (p) => p.stock <= p.lowStockThreshold && p.stock > 0
+    (p) => p.stock <= (p.lowStockThreshold || 5) && p.stock > 0
   ).length;
   const outOfStockProducts = products.filter((p) => p.stock === 0).length;
-  const totalValue = products.reduce((sum, p) => sum + p.price * p.stock, 0);
+  const totalValue = products.reduce(
+    (sum, p) => sum + (p.sellingPrice || p.price || 0) * p.stock,
+    0
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-6">
@@ -202,7 +220,7 @@ const InventoryManagement = () => {
               <div className="ml-3">
                 <p className="text-sm font-medium text-gray-600">Total Value</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  ${totalValue.toFixed(2)}
+                  Rs.{totalValue.toFixed(2)}
                 </p>
               </div>
             </div>
@@ -309,7 +327,7 @@ const InventoryManagement = () => {
                     Category
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Price
+                    Selling Price
                   </th>
                   <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Stock
@@ -325,23 +343,28 @@ const InventoryManagement = () => {
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredProducts.map((product) => {
                   const stockStatus = getStockStatus(product);
+                  const productStatus = getProductStatus(product);
                   return (
-                    <tr key={product.id} className="hover:bg-gray-50">
+                    <tr key={product._id} className="hover:bg-gray-50">
                       <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex items-center">
+                          {console.log(product.images?.[0])}
                           <img
                             className="h-10 w-10 rounded-lg object-cover"
-                            src={product.image}
+                            src={getMediaUrl(product.images?.[0])}
                             alt={product.name}
+                            onError={(e) => {
+                              e.target.src = "/api/placeholder/40/40";
+                            }}
                           />
                           <div className="ml-3">
                             <button
                               onClick={() => {
-                                navigate(`/product/${product.id}`);
+                                navigate(`/product/${product._id}`);
                                 window.scrollTo(0, 0);
                               }}
                             >
-                              <div className="text-sm font-medium text-gray-900">
+                              <div className="text-sm font-medium text-gray-900 hover:text-blue-600">
                                 {product.name}
                               </div>
                             </button>
@@ -349,13 +372,13 @@ const InventoryManagement = () => {
                         </div>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {product.discount}
+                        {product.discount || 0}%
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-500">
                         {product.category}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm text-gray-900">
-                        ${product.price}
+                        ${product.sellingPrice || product.price || 0}
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex items-center">
@@ -378,24 +401,28 @@ const InventoryManagement = () => {
                       <td className="px-4 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            product.status === "active"
+                            productStatus === "active"
                               ? "text-green-800 bg-green-100"
                               : "text-gray-800 bg-gray-100"
                           }`}
                         >
-                          {product.status}
+                          {productStatus}
                         </span>
                       </td>
                       <td className="px-4 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex items-center space-x-2">
                           <button
-                            onClick={() => navigate()}
+                            onClick={() => {
+                              navigate(
+                                `/seller/${id}/edit-product/${product._id}`
+                              );
+                            }}
                             className="text-blue-600 hover:text-blue-900 p-1 rounded-full hover:bg-blue-50"
                           >
                             <Edit2 className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDeleteProduct(product.id)}
+                            onClick={() => handleDeleteProduct(product._id)}
                             className="text-red-600 hover:text-red-900 p-1 rounded-full hover:bg-red-50"
                           >
                             <Trash2 className="h-4 w-4" />

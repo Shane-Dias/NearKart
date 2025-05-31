@@ -7,6 +7,13 @@ import sellerRoutes from "./routes/sellerRoutes.js";
 import loginRoutes from "./routes/loginRoutes.js";
 import cookieParser from "cookie-parser";
 import productRoutes from "./routes/productRoutes.js";
+import path from "path";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
+// Get directory name
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 dotenv.config();
 
@@ -19,6 +26,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 connectDB();
 
 app.use("/api/buyer", buyerRoutes);

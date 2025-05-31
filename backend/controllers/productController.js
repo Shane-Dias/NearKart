@@ -55,3 +55,16 @@ export const addNewProduct = async (req, res) => {
     });
   }
 };
+
+export const retriveSellerProducts = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const products = await Product.find({ sellerId: id }).select(
+      "name description originalPrice discount sellingPrice stock lowThresholdCount images specifications category brand deliveryCharges returnPolicy"
+    );
+    res.status(200).json({ msg: "Success", products });
+  } catch (error) {
+    console.log("Some error occured:", error);
+    res.status(500).json({ msg: "Error" });
+  }
+};
