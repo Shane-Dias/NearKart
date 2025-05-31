@@ -185,25 +185,27 @@ const Navbar = () => {
               </div>
 
               {/* Shopping Cart */}
-              <button
-                onClick={() => {
-                  navigate(`/cart/${user.userId}`);
-                  window.scrollTo(0, 0);
-                }}
-                className="relative flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-600"
-              >
-                <div className="relative">
-                  <ShoppingCart className="h-6 w-6" />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                      {cartCount}
-                    </span>
-                  )}
-                </div>
-                <span className="hidden sm:block text-sm font-medium">
-                  Cart
-                </span>
-              </button>
+              {user && user.role === "Buyer" && (
+                <button
+                  onClick={() => {
+                    navigate(`/cart/${user.userId}`);
+                    window.scrollTo(0, 0);
+                  }}
+                  className="relative flex items-center space-x-2 text-white hover:text-blue-200 transition-colors duration-200 p-2 rounded-lg hover:bg-blue-600"
+                >
+                  <div className="relative">
+                    <ShoppingCart className="h-6 w-6" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </div>
+                  <span className="hidden sm:block text-sm font-medium">
+                    Cart
+                  </span>
+                </button>
+              )}
 
               {/* Mobile Menu Button */}
               <button
