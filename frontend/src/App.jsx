@@ -22,6 +22,8 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+
+        {/* Buyer Specific Routes */}
         {!user && (
           <>
             <Route path="/signup/buyer" element={<BuyerSignup />} />
@@ -29,6 +31,8 @@ const App = () => {
             <Route path="/login" element={<Login />} />
           </>
         )}
+
+        {/* Public Routes */}
         <Route path="/category/:category" element={<CategoryPage />} />
         <Route path="/product/:product" element={<ProductDetails />} />
         {user && user.role !== "Seller" && (
@@ -37,6 +41,8 @@ const App = () => {
             <Route path="/cart/:id" element={<Cart />} />
           </>
         )}
+
+        {/* Seller Specific Routes */}
         {user && user.role === "Seller" && (
           <>
             <Route path="/seller/:id" element={<SellerDashboard />} />

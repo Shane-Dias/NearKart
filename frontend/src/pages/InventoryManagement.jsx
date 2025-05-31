@@ -6,7 +6,7 @@ import {
   Trash2,
   Filter,
   Download,
-  Upload,
+  ArrowLeft,
   Package,
   AlertTriangle,
   CheckCircle,
@@ -74,11 +74,20 @@ const InventoryManagement = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   const categories = [
-    "Electronics",
-    "Food & Beverage",
-    "Clothing",
-    "Home & Garden",
-    "Sports",
+    "Grocery & Food",
+    "Electronics & Gadgets",
+    "Clothing & Fashion",
+    "Home & Kitchen",
+    "Health & Beauty",
+    "Books & Stationery",
+    "Sports & Fitness",
+    "Toys & Games",
+    "Jewelry & Accessories",
+    "Automotive",
+    "Hardware & Tools",
+    "Pet Supplies",
+    "Art & Crafts",
+    "Others",
   ];
 
   const filteredProducts = products.filter((product) => {
@@ -125,6 +134,15 @@ const InventoryManagement = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 lg:p-6">
+      <button
+        onClick={() => {
+          window.history.back();
+        }}
+        className="flex items-center gap-2 text-blue-600 hover:text-blue-800 mb-6 transition-colors duration-200"
+      >
+        <ArrowLeft className="h-5 w-5" />
+        <span className="font-medium">Back</span>
+      </button>
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
@@ -245,7 +263,7 @@ const InventoryManagement = () => {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="all">All Categories</option>
                     {categories.map((cat) => (
@@ -263,7 +281,7 @@ const InventoryManagement = () => {
                   <select
                     value={selectedStatus}
                     onChange={(e) => setSelectedStatus(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border outline-none border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="all">All Status</option>
                     <option value="active">Active</option>
@@ -317,10 +335,12 @@ const InventoryManagement = () => {
                             alt={product.name}
                           />
                           <div className="ml-3">
-                            <button onClick={() => {
-                              
-                            }
-                            }>
+                            <button
+                              onClick={() => {
+                                navigate(`/product/${product.id}`);
+                                window.scrollTo(0, 0);
+                              }}
+                            >
                               <div className="text-sm font-medium text-gray-900">
                                 {product.name}
                               </div>
