@@ -111,7 +111,7 @@ export const buyerProfile = async (req, res) => {
     const requesterId = req.user.userId; // Set from auth middleware
     const role = req.user.role;
 
-    if (requesterId !== _id ) {
+    if (requesterId !== _id) {
       return res.status(403).json({ msg: "Access denied" });
     }
 
@@ -128,5 +128,21 @@ export const buyerProfile = async (req, res) => {
   } catch (error) {
     console.error("Error fetching user details:", error);
     res.status(500).json({ msg: "Server error" });
+  }
+};
+
+export const updateBuyerProfile = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const updatedProfile = await Buyer.findByIdAndUpdate(
+      id,
+      { $set: req.body },
+      { new: true }
+    ).select("firstname lastname gender email phoneNo city address pincode");
+    res.status(200).json(updatedProfile);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ msg: "Update Profile failed", error: error.message });
   }
 };
