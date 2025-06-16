@@ -110,3 +110,16 @@ export const verifySellerOtp = async (req, res) => {
     res.status(500).json({ msg: "Registration failed", error: err.message });
   }
 };
+
+export const sellerDetails = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const seller = await Seller.findById(id).select(
+      "shopName ownerName shopCategory email phoneNo city pincode businessAddress shopLogo"
+    );
+    res.status(200).json(seller, { msg: "Success" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Server error", error: error.message });
+  }
+};

@@ -1,6 +1,7 @@
 import express from "express";
 import upload from "../middlewares/upload.js";
 import {
+  sellerDetails,
   signupSeller,
   verifySellerOtp,
 } from "../controllers/sellerController.js";
@@ -17,5 +18,6 @@ router.post(
 );
 
 router.post("/verify-otp", verifySellerOtp);
+router.get("/:id", sellerDetails);
 
 export default router;
