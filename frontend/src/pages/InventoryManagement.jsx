@@ -348,7 +348,6 @@ const InventoryManagement = () => {
                     <tr key={product._id} className="hover:bg-gray-50">
                       <td className="px-4 py-4 whitespace-nowrap">
                         <div className="flex items-center">
-                          {console.log(product.images?.[0])}
                           <img
                             className="h-10 w-10 rounded-lg object-cover"
                             src={getMediaUrl(product.images?.[0])}

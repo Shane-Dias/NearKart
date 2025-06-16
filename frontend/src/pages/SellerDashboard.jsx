@@ -17,6 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 export default function SellerDashboard() {
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const handleNavigation = (path) => {
     navigate(path);
@@ -159,7 +160,7 @@ export default function SellerDashboard() {
               View Inventory
             </button>
             <button
-              onClick={() => handleNavigation("profile")}
+              onClick={() => handleNavigation(`/seller/profile/${id}`)}
               className="flex items-center justify-center px-6 py-4 bg-white text-gray-600 border-2 border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5"
             >
               <User className="h-5 w-5 mr-2" />

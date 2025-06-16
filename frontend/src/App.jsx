@@ -14,6 +14,7 @@ import SellerDashboard from "./pages/SellerDashboard";
 import AddProductForm from "./pages/AddProduct";
 import InventoryManagement from "./pages/InventoryManagement";
 import { useAuth } from "./context/AuthContext";
+import SellerDetails from "./pages/SellerDetails";
 
 const App = () => {
   const { user } = useAuth();
@@ -41,6 +42,7 @@ const App = () => {
             <Route path="/cart/:id" element={<Cart />} />
           </>
         )}
+        <Route path="/seller/profile/:id" element={<SellerDetails />} />
 
         {/* Seller Specific Routes */}
         {user && user.role === "Seller" && (
